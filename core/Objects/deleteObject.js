@@ -3,21 +3,19 @@ const storage = require('../googleStorage');
 // This is the method to get list from the Google Storage
 module.exports = {
 
-    command: 'deleteObject [parameter] [parameter2]',
-    aliases: ['del', 'delete'],
+    command: 'deleteObject [Bucketname] [Filename]',
+    aliases: ['delobj'],
     describe: 'Delete an object of your bucket',
-    builder: yargs => yargs.default('parameter', 'parameter2'),
+    builder: yargs => yargs.default('Bucketname', 'my-project-inegi'),
     handler: argv => {
 
         storage
-            .bucket(argv.parameter)
-            .file(argv.parameter2)
+            .bucket( argv.Bucketname )
+            .file( argv.Filename )
             .delete()
-            .then(() => {
-                console.log(`gs://${argv.parameter}/${argv.parameter2} deleted.`);
+            .then( _ => {
+                console.log(`gs://${argv.Bucketname}/${argv.Filename} deleted.`);
             })
-            .catch(err => {
-                console.error('ERROR:', err);
-            });
+            .catch( err => console.error('ERROR:',err.errors[0].message) );
     }
 }

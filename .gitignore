@@ -73,6 +73,7 @@ public/
 /test.js
 /test2.js
 /test3.js
+/test4.js
 /terminal_drive_test.js
 /core/google_EXAMPLE.js
 /google_cloud_storage.json
@@ -81,3 +82,4 @@ public/
 /core/account.js
 /core/db_DataStore.js
 /storage_test.js
+/testConfig.js
