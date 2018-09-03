@@ -3,10 +3,9 @@ const storage = require('../googleStorage');
 module.exports = {
 
 //quitar el parametro innecesario
-    command: 'listBuckets [parameter]',
+    command: 'listBuckets',
     aliases: ['lsb', 'listB'],
     describe: 'List all Buckets',
-    builder: yargs => yargs.default('parameter'),
     handler: argv => {
 
         storage
