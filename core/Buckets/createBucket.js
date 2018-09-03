@@ -3,21 +3,21 @@ const storage = require('../googleStorage');
 // This is the method to get list from the Google Storage
 module.exports = {
 
-    command: 'createBucket [parameter]',
+    command: 'createBucket [name]',
     aliases: ['cr', 'create'],
     describe: 'Create a new Bucket',
-    builder: yargs => yargs.default('parameter'),
+    builder: yargs => yargs.default('name'),
     handler: argv => {
 
         storage
-        .createBucket(argv.parameter, {
+        .createBucket(argv.name, {
             location: 'ASIA',
             storageClass: 'COLDLINE',
         })
-        .then(() => {
-            console.log(`Bucket ${argv.parameter} created.`);
+        .then( _ => {
+            console.log(`Bucket ${argv.name} created.`);
         })
-        .catch(err => {
+        .catch( err => {
             console.error('ERROR:',err.errors[0].message);
         });
     }
