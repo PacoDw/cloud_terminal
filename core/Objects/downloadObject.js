@@ -1,30 +1,29 @@
 const storage = require('../googleStorage');
+const path = require('path');
 
 // This is the method to get list from the Google Storage
 module.exports = {
 
-    command: 'downloadObject [parameter] [srcFilename] [destFilename]',
+    command: 'downloadObject [Bucketname] [srcFilename]',
     aliases: ['down', 'download'],
     describe: 'Download an object from your bucket',
-    builder: yargs => yargs.default('parameter', 'srcFilename', 'destFilename'),
+    builder: yargs => yargs.default('Bucketname', 'my-project-inegi'),
     handler: argv => {
 
         const options = {
             // The path to which the file should be downloaded, e.g. "./file.txt"
-            destination: argv.destFilename,
+            destination: path.join( argv.path, `/${argv.srcFilename}` ),
           };
           
         storage
-            .bucket(argv.parameter)
+            .bucket(argv.Bucketname)
             .file(argv.srcFilename)
             .download(options)
             .then(() => {
                 console.log(
-                    `gs://${argv.parameter}/${argv.srcFilename} downloaded to ${argv.destFilename}.`
+                    `gs://${argv.Bucketname}/${argv.srcFilename} downloaded to ${argv.path}.`
                 );
             })
-            .catch(err => {
-                console.error('ERROR:', err);
-            });
+            .catch(err => console.error('ERROR:',err) );
     }
 }
