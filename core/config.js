@@ -7,6 +7,14 @@ const findUp = require('find-up');
 let pathConfig = findUp.sync( '.config.json' );
 let config = JSON.parse( fs.readFileSync(pathConfig, 'utf-8') );
 
+let writeFileConfig = ( pathConfig, config, code, callback ) => {
+    fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
+        (err) ? callback( { code : 'ERR' }, { err } ) : {};   
+        
+        if( callback ) return callback( code, config['path'] ); 
+    });
+}
+
 module.exports = {
     config,
     newPath : ( argv, callback ) => {
@@ -14,28 +22,20 @@ module.exports = {
 
         if ( fs.existsSync( new_path) )
         {
-            let complete_path = path.join( new_path, 'Inegi_Downloads' );
-            config['path'] = complete_path;
+            config['path'] = path.join( new_path, 'Inegi_Downloads' );
 
-            if ( fs.existsSync( complete_path ) )
+            if ( fs.existsSync( config['path'] ) )
             {
-                if( argv.path == complete_path )
-                    return callback( { code : 'SAME' }, complete_path );
-         
-                fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-                    (err) ? callback( { code : 'ERR' }, { err } ) : {};    
-                    return callback( { code : 'EEXIST' }, complete_path ); 
-                });
+                if( argv.path == config['path'] ) 
+                    return callback( { code : 'SAME' }, config['path'] );
+
+                writeFileConfig( pathConfig, config, { code : 'EEXIST' }, callback );
             }
             else
             {
-                fs.mkdir( complete_path, err => {
+                fs.mkdir( config['path'], err => {
                     (err) ? callback( { code : 'ERR' }, { err } ) : {};    
-                    
-                    fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-                        (err) ? callback( { code : 'ERR' }, { err } ) : {};    
-                        return callback( { code : 'SAVED' }, complete_path ); 
-                    });
+                    writeFileConfig( pathConfig, config, { code : 'SAVED' }, callback );
                 });
             }
         }
@@ -47,11 +47,9 @@ module.exports = {
         {
             argv.path = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads');
             config['path'] = argv.path; 
-            fs.mkdirSync(argv.path);
             
-            fs.writeFile(pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-                if (err) throw err;
-            });
+            fs.mkdirSync(argv.path);
+            writeFileConfig( pathConfig, config, { code : 'SAVED' }, undefined );
         }
         // else 
         // {
