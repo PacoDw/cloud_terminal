@@ -1,4 +1,9 @@
-const argv = require('yargs');
+const yargs = require('yargs');
+
+// Config
+const JsonFile = require('./core/config');
+const jsonFile = new JsonFile(yargs);
+
 
 // My method
 const listObject = require('./core/Objects/listObject');
@@ -10,11 +15,11 @@ const createBucket = require('./core/Buckets/createBucket');
 const listBuckets = require('./core/Buckets/listBuckets');
 const localFolder = require('./core/localFolder');
 
-// Config
-const { config, checkPath } = require('./core/config');
 
-argv
-	.middleware( [ checkPath ] )
+let checkConfig = _ => jsonFile.checkConfig()
+
+yargs
+	.middleware( [checkConfig] )
 	.usage('\nWelcome Google Storage.\n\nUsage: $0 [options]')
 	.command( localFolder )
 	.command( uploadObject )
@@ -30,6 +35,6 @@ argv
 	.example('node myStorage.js ls my-project-inegi')
 	.help()
 	.alias('help', 'h')
-	.config( config )
-	.wrap( argv.myWrap )
+	.config( jsonFile.config )
+	.wrap( yargs.customWrap )
 	.argv;
