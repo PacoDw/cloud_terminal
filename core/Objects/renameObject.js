@@ -18,7 +18,7 @@ module.exports = {
         )
       })
       .catch(err => {
-        console.error('ERROR:', err)
+        console.error('ERROR:', err.errors[0].message)
       })
   }
 }

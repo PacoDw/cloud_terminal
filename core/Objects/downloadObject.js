@@ -24,6 +24,6 @@ module.exports = {
                     `gs://${argv.Bucketname}/${argv.srcFilename} downloaded to ${argv.path}.`
                 );
             })
-            .catch(err => console.error('ERROR:',err) );
+            .catch(err => console.error('ERROR:',err.message) );
     }
 }
