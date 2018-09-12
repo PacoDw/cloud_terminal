@@ -3,74 +3,134 @@ const path = require('path');
 const os = require('os'); 
 const findUp = require('find-up');
 
+module.exports = class JsonFile {
+    constructor( yargs ){
+        this.pathConfig = findUp.sync( '.config.json' ) || ''; 
+        this.config = this.pathConfig ? JSON.parse( fs.readFileSync(this.pathConfig, 'utf-8')) : {}; 
+        this.yargs = yargs;
+    }
 
-let pathConfig = findUp.sync( '.config.json' );
-let config = JSON.parse( fs.readFileSync(pathConfig, 'utf-8') );
 
-module.exports = {
-    config,
-    newPath : ( argv, callback ) => {
-        let new_path = argv['set'];
+    // Satitc Method To Write Config
+    static writeConfig( pathConfig, config, code, callback ) {
+        fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
+            (err) ? callback( err, { code : 'ERR' } ) : {};   
+            
+            if( callback ) return callback( err, code || 'SAVED', config['path'] ); 
+        });
+    }
+
+
+    // Method to Create a JSON CONFIGURATION FILE FILE
+    createJsonFile(config) {
+        let defaultConfig = {
+            "path": "/home/paco/Documents/Inegi_Downloads",
+            "bucket" : "",
+            "wrap": "84"
+        };                
+            config ? {} : config = defaultConfig, this.config = defaultConfig;
+
+        JsonFile.writeConfig( path.join(process.cwd(), '.config.json'), config, undefined, err => {
+            if( err ) console.log(`ERROR: ${err}`);
+            
+            if( !findUp.sync(config['path']) )
+                fs.mkdir( this.config['path'], err => {
+                    if( err ) console.log(`ERROR: ${err}`);
+                }); 
+        });
+    }
+
+
+    // Method that Create a Folder Container
+    createFolderContainer() {
+        if( !findUp.sync(this.config['path']) )
+        {
+            let myPath = '';
+
+            if(this.config['path'] != '')
+                myPath = this.config['path']
+            else
+                myPath = "/home/paco/Documents/Inegi_Downloads";
+                
+            fs.mkdir( myPath, err => {
+                if( err ) console.log(`ERROR: ${err}`);
+            }); 
+        }
+    }
+
+
+    // METHOD TO SET A NEW PATH AND CREATE A FOLDER 
+    newPath(callback) {
+        let new_path = this.yargs['set'];
 
         if ( fs.existsSync( new_path) )
         {
-            let complete_path = path.join( new_path, 'Inegi_Downloads' );
-            config['path'] = complete_path;
-
-            if ( fs.existsSync( complete_path ) )
+            this.config['path'] = path.join( new_path, 'Inegi_Downloads' );
+            if ( fs.existsSync( this.config['path'] ) )
             {
-                if( argv.path == complete_path )
-                    return callback( { code : 'SAME' }, complete_path );
-         
-                fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-                    (err) ? callback( { code : 'ERR' }, { err } ) : {};    
-                    return callback( { code : 'EEXIST' }, complete_path ); 
-                });
+                if( this.yargs.path == this.config['path'] ) 
+                    return callback( { code : 'SAME' }, this.config['path'] );
+
+                JsonFile.writeConfig( this.pathConfig, this.config, { code : 'EEXIST' }, callback );
             }
             else
-            {
-                fs.mkdir( complete_path, err => {
-                    (err) ? callback( { code : 'ERR' }, { err } ) : {};    
-                    
-                    fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-                        (err) ? callback( { code : 'ERR' }, { err } ) : {};    
-                        return callback( { code : 'SAVED' }, complete_path ); 
-                    });
+                fs.mkdir( this.config['path'], err => {
+                    (err) ? callback( err, { code : 'ERR' } ) : {};    
+                    JsonFile.writeConfig( this.pathConfig, this.config, { code : 'SAVED' }, callback );
                 });
-            }
         }
         else
             return callback( { code : 'NOEEXIST' }, new_path ); 
-    },
-    checkPath : argv => {
-        if ( argv.path == '' )
+    }
+
+
+    // METHOD THAT CHECK THE CONFIGURATION
+    checkConfig() {
+        if (!fs.existsSync( this.pathConfig ) ) 
         {
-            argv.path = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads');
-            config['path'] = argv.path; 
-            fs.mkdirSync(argv.path);
-            
-            fs.writeFile(pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-                if (err) throw err;
-            });
+            this.yargs.config( { 'pathExists' : false } );
+            this.createJsonFile();
+            this.createFolderContainer();
+            return this.yargs.argv
         }
+        else
+        {
+            this.yargs.config( { 'pathExists' : true } );
+            this.createFolderContainer();
+            return this.yargs.argv
+        }
+        
+
+        // if ( this.yargs.path == '' )
+        // {
+        //     this.yargs.path = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads');
+        //     config['path'] = this.yargs.path; 
+            
+        //     fs.mkdirSync(this.yargs.path);
+        //     JsonFile.writeConfig( pathConfig, config, { code : 'SAVED' }, undefined );
+        // }
         // else 
         // {
             // Determinated if a pach exists in config.json and so in real path 
             // if not exists so we should created it with de same path that is in 
             // config.json
-            // if( fs.existsSync( argv.path ) )
+            // if( fs.existsSync( this.yargs.path ) )
         // }
-    },
-    newWrap : newWrap => {
+
+    }
+
+
+    newWrap(newWrap) {
         if ( newWrap != '' )
         {
-            argv.myWrap = newWrap
-            config['wrap'] = argv.myWrap; 
+            this.yargs.myWrap = newWrap
+            this.config['wrap'] = this.yargs.myWrap; 
     
-            fs.writeFile(pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
+            fs.writeFile(this.pathConfig, JSON.stringify( this.config, 0, 4 ), 'utf-8', err => {
                 if (err) throw err;
                 console.log('Done! You new config has been saved.');
             }); 
         }
-    },
-};
+    }
+}
+
