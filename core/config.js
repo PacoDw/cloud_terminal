@@ -3,15 +3,16 @@ const path = require('path');
 const os = require('os'); 
 const findUp = require('find-up');
 
-module.exports = class JsonFile {
-    constructor( yargs ){
+class SettingsFile {
+    constructor(){
         this.pathConfig = findUp.sync( '.config.json' ) || ''; 
         this.config = this.pathConfig ? JSON.parse( fs.readFileSync(this.pathConfig, 'utf-8')) : {}; 
-        this.yargs = yargs;
+        this.yargs = {};
+        this.variable = 'Algo';
     }
 
 
-    // Satitc Method To Write Config
+    // Method To Write Config
     static writeConfig( pathConfig, config, code, callback ) {
         fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
             (err) ? callback( err, { code : 'ERR' } ) : {};   
@@ -22,40 +23,56 @@ module.exports = class JsonFile {
 
 
     // Method to Create a JSON CONFIGURATION FILE FILE
-    createJsonFile(config) {
-        let defaultConfig = {
-            "path": "/home/paco/Documents/Inegi_Downloads",
-            "bucket" : "",
-            "wrap": "84"
-        };                
-            config ? {} : config = defaultConfig, this.config = defaultConfig;
+    createSettingsFile(config) {
+        return new Promise( (resolve, reject) => {
+            let defaultConfig = {
+                "path": path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads'),
+                "bucket" : "",
+                "wrap": "84"
+            };                
+                config ? {} : config = defaultConfig, this.config = defaultConfig;
+    
+            SettingsFile.writeConfig( path.join(process.cwd(), '.config.json'), config, undefined, err => {
+                if( err ) reject(err);
+    
+                config['pathExists'] = true;
+                console.log(`Success: your path has been created in: ${config['path']}`);
 
-        JsonFile.writeConfig( path.join(process.cwd(), '.config.json'), config, undefined, err => {
-            if( err ) console.log(`ERROR: ${err}`);
-            
-            if( !findUp.sync(config['path']) )
-                fs.mkdir( this.config['path'], err => {
-                    if( err ) console.log(`ERROR: ${err}`);
-                }); 
+                if( !findUp.sync(config['path']) )
+                {
+                    console.log("\nYou don't have any container folder , we will create one...");
+                    fs.mkdir( this.config['path'], err => {
+                        if( err ) reject(err);
+                        console.log('Success: The folder has been created in: ',this.config['path']);
+                    }); 
+                }
+                else
+                    console.log('\nYou already have a container folder in the same path...')
+
+                resolve(config);
+            });
         });
     }
 
 
-    // Method that Create a Folder Container
+    // Method that Create a container folder
     createFolderContainer() {
-        if( !findUp.sync(this.config['path']) )
-        {
+        return new Promise( (resolve, reject) => {
             let myPath = '';
-
+    
             if(this.config['path'] != '')
                 myPath = this.config['path']
             else
-                myPath = "/home/paco/Documents/Inegi_Downloads";
+                myPath = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads');
                 
+                this.config['path'] = myPath;
+
             fs.mkdir( myPath, err => {
-                if( err ) console.log(`ERROR: ${err}`);
+                if( err ) return reject(err)
+                console.log('Success: The folder has been created in: ',this.config['path']);
+                    return resolve(true);
             }); 
-        }
+        });
     }
 
 
@@ -71,12 +88,12 @@ module.exports = class JsonFile {
                 if( this.yargs.path == this.config['path'] ) 
                     return callback( { code : 'SAME' }, this.config['path'] );
 
-                JsonFile.writeConfig( this.pathConfig, this.config, { code : 'EEXIST' }, callback );
+                SettingsFile.writeConfig( this.pathConfig, this.config, { code : 'EEXIST' }, callback );
             }
             else
                 fs.mkdir( this.config['path'], err => {
                     (err) ? callback( err, { code : 'ERR' } ) : {};    
-                    JsonFile.writeConfig( this.pathConfig, this.config, { code : 'SAVED' }, callback );
+                    SettingsFile.writeConfig( this.pathConfig, this.config, { code : 'SAVED' }, callback );
                 });
         }
         else
@@ -85,38 +102,25 @@ module.exports = class JsonFile {
 
 
     // METHOD THAT CHECK THE CONFIGURATION
-    checkConfig() {
+    checkConfig(yargs) {
+        this.yargs = yargs;
+
         if (!fs.existsSync( this.pathConfig ) ) 
         {
-            this.yargs.config( { 'pathExists' : false } );
-            this.createJsonFile();
-            this.createFolderContainer();
-            return this.yargs.argv
+            console.log('\nYour path is not exits, take us a moment to create it...');
+            return this.createSettingsFile()
+                        .then( config => {
+                            this.yargs.config( config );
+                            return { y :this.yargs };
+                        })
+                        .then( res => res );
         }
-        else
+        else if( !findUp.sync(this.config['path']) )
         {
-            this.yargs.config( { 'pathExists' : true } );
-            this.createFolderContainer();
-            return this.yargs.argv
+            console.log("\nYou don't have any container folder, we will create one...\n");
+            return this.createFolderContainer().then( _ => { y :this.yargs } );
         }
-        
-
-        // if ( this.yargs.path == '' )
-        // {
-        //     this.yargs.path = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads');
-        //     config['path'] = this.yargs.path; 
-            
-        //     fs.mkdirSync(this.yargs.path);
-        //     JsonFile.writeConfig( pathConfig, config, { code : 'SAVED' }, undefined );
-        // }
-        // else 
-        // {
-            // Determinated if a pach exists in config.json and so in real path 
-            // if not exists so we should created it with de same path that is in 
-            // config.json
-            // if( fs.existsSync( this.yargs.path ) )
-        // }
-
+        return Promise.resolve( { y :this.yargs } );
     }
 
 
@@ -134,3 +138,4 @@ module.exports = class JsonFile {
     }
 }
 
+module.exports = new SettingsFile();
