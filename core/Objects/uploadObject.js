@@ -15,6 +15,6 @@ module.exports = {
             .then(() => {
                 console.log(`${argv.filename} uploaded to ${argv.Bucketname}.`);
             })
-            .catch(err => console.error('ERROR:',err.errors[0].message) );
+            .catch(err => console.error('ERROR: File or Bucket not found') );
     }
 }

@@ -24,6 +24,6 @@ module.exports = {
                     `\nYour file ${argv.Filename} from ${argv.Bucket} has been downloaded in ${argv.path}.`
                 );
             })
-            .catch(err => console.error('ERROR:',err) );
+            .catch(err => console.error('ERROR:',err.message) );
     }
 }
