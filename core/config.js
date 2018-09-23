@@ -1,28 +1,33 @@
 const fs = require('fs');
 const path = require('path');
-const os = require('os'); 
 const findUp = require('find-up');
 
+/** @class This class can create a config.json file that contains all relevant configuration 
+ * about the app, also can create a container folder that storing all downolads downloads.
+ * This inicialize when starts the app and verify if exists the container folder and config.json,
+ * if they do not exist, it creates instead. */
 class SettingsFile {
     constructor(){
         this.pathConfig = findUp.sync( '.config.json' ) || ''; 
         this.config = this.pathConfig ? JSON.parse( fs.readFileSync(this.pathConfig, 'utf-8')) : {}; 
-        this.yargs = {};
-        this.variable = 'Algo';
     }
 
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Returns all messages to displaying in terminal */
+    messages(code) { return require('./messages')(code, this.config['path']) }
 
-    // Method To Write Config
-    static writeConfig( pathConfig, config, code, callback ) {
-        fs.writeFile( pathConfig, JSON.stringify( config, 0, 4 ), 'utf-8', err => {
-            (err) ? callback( err, { code : 'ERR' } ) : {};   
-            
-            if( callback ) return callback( err, code || 'SAVED', config['path'] ); 
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Receives an object with a path to write inside the config.json file */
+    writeConfig( { path, code, message } ) {
+        this.config['path'] = path ? path : this.config['path'];
+        fs.writeFile( this.pathConfig, JSON.stringify( this.config, 0, 4 ), 'utf-8', err => {
+            if (err)   console.err('ERROR: ', err); 
+            console.log(`${this.messages(code) || ''}  ${ message || ''}`)
         });
     }
 
-
-    // Method to Create a JSON CONFIGURATION FILE FILE
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Create the config.json and return a promise with all the settings contained in config.json.  */
     createSettingsFile(config) {
         return new Promise( (resolve, reject) => {
             let defaultConfig = {
@@ -30,32 +35,36 @@ class SettingsFile {
                 "bucket" : "",
                 "wrap": "84"
             };                
-                config ? {} : config = defaultConfig, this.config = defaultConfig;
-    
-            SettingsFile.writeConfig( path.join(process.cwd(), '.config.json'), config, undefined, err => {
+            config ? {} : config = defaultConfig, this.config = defaultConfig;
+            fs.writeFile( path.join(process.cwd(), '.config.json'), JSON.stringify( config, 0, 4 ), 'utf-8', err => {
                 if( err ) reject(err);
     
                 config['pathExists'] = true;
-                console.log(`Success: your path has been created in: ${config['path']}`);
-
-                if( !findUp.sync(config['path']) )
-                {
-                    console.log("\nYou don't have any container folder , we will create one...");
-                    fs.mkdir( this.config['path'], err => {
-                        if( err ) reject(err);
-                        console.log('Success: The folder has been created in: ',this.config['path']);
-                    }); 
-                }
-                else
-                    console.log('\nYou already have a container folder in the same path...')
-
+                console.log(this.messages('PATH_CREATED'));
                 resolve(config);
             });
+        })
+        .then( config => {            
+            if( !findUp.sync(config['path']) )
+            {
+                this.config = config;
+                console.log(this.messages('FOLDER_NOT_EXISTS'));
+                fs.mkdir( this.config['path'], err => {
+                    if( err ) reject(err);
+                    console.log(this.messages('FOLDER_CREATED'));
+                    return Promise.resolve(config);            
+                }); 
+            }
+            else
+            {
+                console.log(this.messages('FOLDER_SAME_PATH_EXIST'));
+                return Promise.resolve(config);            
+            }
         });
     }
 
-
-    // Method that Create a container folder
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Creates the container folder by default in Documents if it doesn't exists.  */
     createFolderContainer() {
         return new Promise( (resolve, reject) => {
             let myPath = '';
@@ -65,77 +74,90 @@ class SettingsFile {
             else
                 myPath = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads');
                 
-                this.config['path'] = myPath;
-
+            this.config['path'] = myPath;
             fs.mkdir( myPath, err => {
                 if( err ) return reject(err)
-                console.log('Success: The folder has been created in: ',this.config['path']);
+                console.log(this.messages('FOLDER_CREATED'));
                     return resolve(true);
             }); 
         });
     }
 
-
-    // METHOD TO SET A NEW PATH AND CREATE A FOLDER 
-    newPath(callback) {
-        let new_path = this.yargs['set'];
-
-        if ( fs.existsSync( new_path) )
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Change the current path with the parameter new_path and determine if the container folder exists to create it */
+    newPath(new_path) {
+        if(new_path.startsWith('.' || '..'))
         {
-            this.config['path'] = path.join( new_path, 'Inegi_Downloads' );
-            if ( fs.existsSync( this.config['path'] ) )
-            {
-                if( this.yargs.path == this.config['path'] ) 
-                    return callback( { code : 'SAME' }, this.config['path'] );
+            if (new_path.endsWith('/' || '\\' || '//'))
+                new_path = path.join(__dirname, new_path.substring(0, new_path.length-1));
+            else
+                new_path = path.join(__dirname, new_path);
+        }
 
-                SettingsFile.writeConfig( this.pathConfig, this.config, { code : 'EEXIST' }, callback );
+        if ( fs.existsSync( new_path ) )
+        {
+            new_path = path.join( new_path, 'Inegi_Downloads' );
+            
+            if ( fs.existsSync( new_path ) )
+            {
+                if( new_path === this.config['path']) 
+                    console.log(this.messages('PATH_ALREADY_USE'));
+                else
+                    this.writeConfig( { path : new_path, code : 'EXIST_FOLDER' } );                    
             }
             else
-                fs.mkdir( this.config['path'], err => {
-                    (err) ? callback( err, { code : 'ERR' } ) : {};    
-                    SettingsFile.writeConfig( this.pathConfig, this.config, { code : 'SAVED' }, callback );
+                fs.mkdir( new_path, err => {
+                    if (err) console.log('ERROR: ', err);
+                    console.log(this.messages('FOLDER_NOT_EXISTS'));
+
+                    this.writeConfig( { path : new_path, code : 'FOLDER_CREATED' } ); 
                 });
         }
         else
-            return callback( { code : 'NOEEXIST' }, new_path ); 
+        {
+            console.log(this.messages('NO_EXIST_PATH_PARAMETER')); 
+            console.log(new_path); 
+        }
     }
 
-
-    // METHOD THAT CHECK THE CONFIGURATION
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Initializes in the yargs middleware to check if the config.js file and the container folder exist, 
+     * if they do not exist, it creates them instead. */
     checkConfig(yargs) {
-        this.yargs = yargs;
+        Object.assign(yargs, { settings : this } );
 
         if (!fs.existsSync( this.pathConfig ) ) 
         {
-            console.log('\nYour path is not exits, take us a moment to create it...');
+            console.log(this.messages('PATH_NOT_EXISTS'));
             return this.createSettingsFile()
                         .then( config => {
-                            this.yargs.config( config );
-                            return { y :this.yargs };
+                            yargs.config( config );
+                            return yargs;
                         })
-                        .then( res => res );
         }
         else if( !findUp.sync(this.config['path']) )
         {
-            console.log("\nYou don't have any container folder, we will create one...\n");
-            return this.createFolderContainer().then( _ => { y :this.yargs } );
+            console.log(this.messages('FOLDER_NOT_EXISTS'));
+            return this.createFolderContainer().then( _ => yargs );
         }
-        return Promise.resolve( { y :this.yargs } );
+        return Promise.resolve( yargs );
     }
 
-
+    // --------------------------------------------------------------------------------------------------------------------------
+    /** @method Change the current path with the parameter new_path and determine if the container folder exists to create it */
     newWrap(newWrap) {
         if ( newWrap != '' )
         {
-            this.yargs.myWrap = newWrap
-            this.config['wrap'] = this.yargs.myWrap; 
-    
-            fs.writeFile(this.pathConfig, JSON.stringify( this.config, 0, 4 ), 'utf-8', err => {
-                if (err) throw err;
-                console.log('Done! You new config has been saved.');
-            }); 
+            this.config['wrap'] = newWrap; 
+                fs.writeFile(this.pathConfig, JSON.stringify( this.config, 0, 4 ), 'utf-8', err => {
+                    if (err){
+                        console.log(this.messages('TRY_AGAIN'));
+                        process.exit(1);
+                    }
+                    console.log(this.messages('CONFIG_SAVED'));
+                }); 
         }
-    }
+    } 
 }
 
 module.exports = new SettingsFile();
