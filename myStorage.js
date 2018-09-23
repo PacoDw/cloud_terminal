@@ -25,6 +25,6 @@ yargs
 	.example('node myStorage.js ls-o my-project-inegi')
 	.help()
 	.alias('help', 'h')
-	// .config( SettingsFile.config )
+	.config( SettingsFile.config )
 	.wrap( yargs.customWrap )
 	.argv;
