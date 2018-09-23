@@ -1,22 +1,26 @@
 {
-  "name": "drive-inegi",
+  "name": "my-cloud-storage",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron main.js",
-    "pack": "build --dir",
-    "dist": "build",
-    "dev": "clear & nodemon ./bin/www"
+  "main": "myStorage.js",
+  "scripts": {},
+  "bin": {
+    "myStorage": "./myStorage.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PacoDw/cloud_terminal"
   },
   "author": "Francisco David Preciado Mendoza <fpreciado2@ucol.mx>",
-  "license": "ISC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PacoDw/cloud_terminal/issues"
+  },
+  "homepage": "https://github.com/PacoDw/cloud_terminal#readme",
   "dependencies": {
     "@google-cloud/storage": "^1.7.0",
     "dotenv": "^5.0.1",
     "googleapis": "^27.0.0",
-    "prompt": "^1.0.0",
-    "request": "^2.85.0",
     "yargs": "^12.0.0"
   },
   "devDependencies": {}
