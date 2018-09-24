@@ -1,12 +1,9 @@
 const yargs = require('yargs');
 const SettingsFile = require('./core/config');
-
 const cmd = require('./core');
 
 let checkConfig =  _ => {
-	return { 
-		yargs :  SettingsFile.checkConfig(yargs)
-	} 
+	return { yargs :  SettingsFile.checkConfig(yargs) }
 }
 
 /* All commands */
@@ -22,9 +19,10 @@ yargs
 	.command( cmd.listBuckets )
 	.command( cmd.renameObject )
 	.demandCommand()
-	.example('node myStorage.js ls-o my-project-inegi')
+	.example('node myStorage ls-o my-project-inegi')
 	.help()
 	.alias('help', 'h')
+	.locale('en')
 	.config( SettingsFile.config )
 	.wrap( yargs.customWrap )
 	.argv;
