@@ -1,9 +1,12 @@
 {
-  "name": "my-cloud-storage",
+  "name": "cloud_terminal",
   "version": "1.0.0",
   "description": "",
   "main": "myStorage.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node ./myStorage.js"
+  },
+  "preferGlobal": true,
   "bin": {
     "myStorage": "./myStorage.js"
   },

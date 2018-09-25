@@ -1,6 +1,6 @@
 module.exports = {
-    command: 'myFolder',
-    aliases: ['mf'],
+    command: 'localFolder',
+    aliases: ['lf'],
     describe: 'Setting a local folder',
     builder: yargs => yargs
         .option('set', {
@@ -22,7 +22,7 @@ module.exports = {
                 throw 'Required at least a one options';
             return argv;
           })
-        .example('node myStorage.js -s your_new_path'),
+        .example('node myStorage -s your_new_path'),
     handler: ( { yargs }  ) => {
         yargs.then( y => {
             if ( y.argv['s'] )
