@@ -8,7 +8,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "myStorage": "./myStorage.js"
+    "ms": "./myStorage.js"
   },
   "repository": {
     "type": "git",
