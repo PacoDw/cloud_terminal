@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const yargs = require('yargs');
 const SettingsFile = require('./core/config');
 const cmd = require('./core');
@@ -9,6 +10,7 @@ let checkConfig =  _ => {
 /* All commands */
 yargs
 	.middleware( [checkConfig] )
+	.scriptName("ct")
 	.usage('\nWelcome Google Storage.\n\nUsage: $0 [options]')
 	.command( cmd.localFolder )
 	.command( cmd.uploadObject )
