@@ -2,13 +2,13 @@
   "name": "cloud_terminal",
   "version": "1.0.0",
   "description": "",
-  "main": "myStorage.js",
+  "main": "ct.js",
   "scripts": {
-    "start": "node ./myStorage.js"
+    "start": "node ./ct.js"
   },
   "preferGlobal": true,
   "bin": {
-    "ms": "./myStorage.js"
+    "ms": "./ct.js"
   },
   "repository": {
     "type": "git",
