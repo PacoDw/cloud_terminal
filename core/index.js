@@ -7,4 +7,5 @@ module.exports = {
     createBucket :  require('./Buckets/createBucket'),
     listBuckets :  require('./Buckets/listBuckets'),
     localFolder :  require('./localFolder'),
+    validateFile : require('./PDFs_validate/validateFile'),
 }

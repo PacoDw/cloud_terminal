@@ -20,6 +20,7 @@ yargs
 	.command( cmd.downloadObject )
 	.command( cmd.listBuckets )
 	.command( cmd.renameObject )
+	.command( cmd.validateFile )
 	.demandCommand()
 	.example('node myStorage ls-o my-project-inegi')
 	.help()
