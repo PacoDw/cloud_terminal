@@ -14,15 +14,16 @@ class SettingsFile {
 
     // --------------------------------------------------------------------------------------------------------------------------
     /** @method Returns all messages to displaying in terminal */
-    messages(code) { return require('./messages')(code, this.config['path']) }
+    message(code, msn) { require('./messages')(code, this.config['path'], msn) }
 
     // --------------------------------------------------------------------------------------------------------------------------
     /** @method Receives an object with a path to write inside the config.json file */
-    writeConfig( { path, code, message } ) {
-        this.config['path'] = path ? path : this.config['path'];
+    writeConfig( { _path, code, message } ) {
+        this.config['path'] = _path ? _path : this.config['path'];
+        this.config['PDFsPath'] = _path.join(documentsPath, 'PDFs');
         fs.writeFile( this.pathConfig, JSON.stringify( this.config, 0, 4 ), 'utf-8', err => {
             if (err)   console.err('ERROR: ', err); 
-            console.log(`${this.messages(code) || ''}  ${ message || ''}`)
+            this.message(code, message);
         });
     }
 
@@ -30,8 +31,10 @@ class SettingsFile {
     /** @method Create the config.json and return a promise with all the settings contained in config.json.  */
     createSettingsFile(config) {
         return new Promise( (resolve, reject) => {
+            let documentsPath = path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads'); 
             let defaultConfig = {
-                "path": path.join(findUp.sync(['Documents', 'Documentos']), 'Inegi_Downloads'),
+                "path": documentsPath,
+                "PDFsPath" : path.join(documentsPath, 'PDFs'),
                 "bucket" : "",
                 "wrap": "84"
             };                
@@ -40,7 +43,7 @@ class SettingsFile {
                 if( err ) reject(err);
     
                 config['pathExists'] = true;
-                console.log(this.messages('PATH_CREATED'));
+                this.message('PATH_CREATED');
                 resolve(config);
             });
         })
@@ -48,16 +51,19 @@ class SettingsFile {
             if( !findUp.sync(config['path']) )
             {
                 this.config = config;
-                console.log(this.messages('FOLDER_NOT_EXISTS'));
+                this.message('FOLDER_NOT_EXISTS');
                 fs.mkdir( this.config['path'], err => {
                     if( err ) reject(err);
-                    console.log(this.messages('FOLDER_CREATED'));
+                    fs.mkdir( this.config['PDFsPath'], error => {
+                        if( error ) console.log('error: ', error);     
+                    });
+                    this.message('FOLDER_CREATED');
                     return Promise.resolve(config);            
                 }); 
             }
             else
             {
-                console.log(this.messages('FOLDER_SAME_PATH_EXIST'));
+                this.message('FOLDER_SAME_PATH_EXIST');
                 return Promise.resolve(config);            
             }
         });
@@ -77,7 +83,10 @@ class SettingsFile {
             this.config['path'] = myPath;
             fs.mkdir( myPath, err => {
                 if( err ) return reject(err)
-                console.log(this.messages('FOLDER_CREATED'));
+                fs.mkdir( this.config['PDFsPath'], error => {
+                    if( error ) console.log('Error: ', error);     
+                });
+                this.message('FOLDER_CREATED');
                     return resolve(true);
             }); 
         });
@@ -101,21 +110,24 @@ class SettingsFile {
             if ( fs.existsSync( new_path ) )
             {
                 if( new_path === this.config['path']) 
-                    console.log(this.messages('PATH_ALREADY_USE'));
+                    this.message('PATH_ALREADY_USE');
                 else
                     this.writeConfig( { path : new_path, code : 'EXIST_FOLDER' } );                    
             }
             else
                 fs.mkdir( new_path, err => {
                     if (err) console.log('ERROR: ', err);
-                    console.log(this.messages('FOLDER_NOT_EXISTS'));
+                    fs.mkdir( this.config['PDFsPath'], error => {
+                        if( error ) console.log('Error: ', error);     
+                    });
+                    this.message('FOLDER_NOT_EXISTS');
 
                     this.writeConfig( { path : new_path, code : 'FOLDER_CREATED' } ); 
                 });
         }
         else
         {
-            console.log(this.messages('NO_EXIST_PATH_PARAMETER')); 
+            this.message('NO_EXIST_PATH_PARAMETER'); 
             console.log(new_path); 
         }
     }
@@ -128,7 +140,7 @@ class SettingsFile {
 
         if (!fs.existsSync( this.pathConfig ) ) 
         {
-            console.log(this.messages('PATH_NOT_EXISTS'));
+            this.message('PATH_NOT_EXISTS');
             return this.createSettingsFile()
                         .then( config => {
                             yargs.config( config );
@@ -137,7 +149,7 @@ class SettingsFile {
         }
         else if( !findUp.sync(this.config['path']) )
         {
-            console.log(this.messages('FOLDER_NOT_EXISTS'));
+            this.message('FOLDER_NOT_EXISTS');
             return this.createFolderContainer().then( _ => yargs );
         }
         return Promise.resolve( yargs );
@@ -151,10 +163,10 @@ class SettingsFile {
             this.config['wrap'] = newWrap; 
                 fs.writeFile(this.pathConfig, JSON.stringify( this.config, 0, 4 ), 'utf-8', err => {
                     if (err){
-                        console.log(this.messages('TRY_AGAIN'));
+                        this.message('TRY_AGAIN');
                         process.exit(1);
                     }
-                    console.log(this.messages('CONFIG_SAVED'));
+                    this.message('CONFIG_SAVED');
                 }); 
         }
     } 
