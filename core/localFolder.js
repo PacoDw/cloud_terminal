@@ -1,6 +1,5 @@
 module.exports = {
-    command: 'localFolder',
-    aliases: ['lf'],
+    command: 'lf',
     describe: 'Setting a local folder',
     builder: yargs => yargs
         .option('set', {
