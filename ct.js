@@ -22,7 +22,7 @@ yargs
 	.command( cmd.renameObject )
 	.command( cmd.validateFile )
 	.demandCommand()
-	.example('node myStorage ls-o my-project-inegi')
+	.example('ct ls-o my-project-inegi')
 	.help()
 	.alias('help', 'h')
 	.locale('en')
