@@ -1,15 +1,14 @@
 const storage = require('../googleStorage')
 
 module.exports = {
-	command: 'renameObject <Filename> <newName> [Bucket]',
-	aliases: ['ren-o'],
+	command: 'ren-o <Filename> <newName> [Bucket]',
 	describe: 'Rename an object of your bucket',
 	builder: yargs => yargs
 		.positional('Bucket', {})
 		.positional('Filename', {})
 		.positional('newName', {})
 		.default('Bucket', 'my-project-inegi')
-		.example('node myStorage ren-o Filename newName [optional bucket]'),	
+		.example('ct ren-o Filename newName [optional bucket]'),	
 	handler: argv => {
 		storage
 			.bucket(argv.Bucket)

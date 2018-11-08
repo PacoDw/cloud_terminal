@@ -1,13 +1,12 @@
 const fif = require('./index');
 
 module.exports = {
-    command: 'validateFiles <word> [resultsName]',
-    aliases: ['vfs'],
+    command: 'val <word> [resultsName]',
     describe: 'Validate PDF file to get results',
     builder: yargs => yargs
 		.positional('word', {})
 		.positional('resultsName', {})
-        .example('node ct vfs word resultsName'),
+        .example('ct val word resultsName'),
     handler: ( yargs ) => {
         fif.findInFiles({
             word : yargs.word, 

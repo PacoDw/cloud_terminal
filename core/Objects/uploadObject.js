@@ -1,14 +1,13 @@
 const storage = require('../googleStorage');
 
 module.exports = {
-    command: 'uploadObject <Filename> [Bucket]',
+    command: 'up-o <Filename> [Bucket]',
     describe: 'Upload an object from your bucket',
-    aliases: ['up-o'],
     builder: yargs => yargs
 		.positional('Filename', {})
 		.positional('Bucket', {})
         .default('Bucket', 'my-project-inegi')
-		.example('node myStorage up-o Filename [optional bucket]'),
+		.example('ct up-o Filename [optional bucket]'),
     handler: argv => {
         storage
             .bucket(argv.Bucket)

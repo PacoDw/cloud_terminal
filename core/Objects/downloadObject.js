@@ -2,14 +2,13 @@ const storage = require('../googleStorage');
 const path = require('path');
 
 module.exports = {
-    command: 'downloadObj <Filename> [Bucket]',
-    aliases: ['down-o'],
+    command: 'down-o <Filename> [Bucket]',
     describe: 'Download an object from a bucket',
     builder: yargs => yargs
         .positional('Bucket', {})
         .positional('Filename', {})
         .default('Bucket', 'my-project-inegi')
-        .example('node myStorage down-o Filename [optional bucket]'),
+        .example('ct down-o Filename [optional bucket]'),
     handler: argv => {          
         storage
             .bucket(argv.Bucket)

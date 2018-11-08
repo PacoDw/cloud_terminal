@@ -1,8 +1,7 @@
 const storage = require('../googleStorage');
 
 module.exports = {
-	command: 'listBuckets',
-	aliases: ['ls-b'],
+	command: 'lb',
 	describe: 'List all Buckets',
 	handler: argv => {
 		storage

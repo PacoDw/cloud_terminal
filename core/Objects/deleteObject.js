@@ -1,14 +1,13 @@
 const storage = require('../googleStorage');
 
 module.exports = {
-    command: 'deleteObject <Filename> [Bucket]',
+    command: 'del-o <Filename> [Bucket]',
     describe: 'Delete an object of your bucket',
-    aliases: ['del-o'],
     builder: yargs => yargs
         .positional('Bucket', {})
         .positional('Filename', {})
         .default('Bucket', 'my-project-inegi')
-        .example('node myStorage del-o Filename [optional bucket]'),
+        .example('ct del-o Filename [optional bucket]'),
     handler: argv => {
         storage
             .bucket( argv.Bucket )

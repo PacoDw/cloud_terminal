@@ -1,8 +1,7 @@
 const storage = require('../googleStorage');
 
 module.exports = {
-    command: 'listObject [Bucket]',
-    aliases: ['ls-o'],
+    command: 'ls-o [Bucket]',
     describe: 'List all objects/files',
     builder: yargs => yargs
         .default('Bucket', 'my-project-inegi'),

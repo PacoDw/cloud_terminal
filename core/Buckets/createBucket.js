@@ -1,8 +1,8 @@
 const storage = require('../googleStorage');
 
 module.exports = {
-    command: 'createBucket <name>',
-    aliases: ['new'],
+    command: 'new <name>',
+    aliases: ['n'],
     describe: 'Create a new Bucket',
     handler: argv => {
         storage
