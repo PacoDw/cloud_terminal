@@ -1,4 +1,4 @@
-module.exports = ( code,  path )  => {
+module.exports = ( code = '',  path, message = '' )  => {
     let messages = {   
         PATH_CREATED : `Success: your path has been created in: ${path}`,
         PATH_NOT_EXISTS : '\nYour path is not exits, take us a moment to create it...',
@@ -11,5 +11,5 @@ module.exports = ( code,  path )  => {
         TRY_AGAIN : '\nSorry, Try again please...',
         CONFIG_SAVED : 'Done! You new config has been saved.',
     }
-    return messages[code];
+    console.log(`${messages[code]} ${message}`);
 }
