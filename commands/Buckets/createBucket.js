@@ -1,7 +1,8 @@
-const storage = require('../googleStorage');
+const storage = require('../../services/googleStorage');
+require('../../core/config/themeColors');
 
 module.exports = {
-    command: 'new <name>',
+    command: 'new '.cmd + '<name>'.req,
     aliases: ['n'],
     describe: 'Create a new Bucket',
     handler: argv => {

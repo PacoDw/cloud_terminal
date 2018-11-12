@@ -1,7 +1,8 @@
-const storage = require('../googleStorage');
+const storage = require('../../services/googleStorage');
+require('../../core/config/themeColors');
 
 module.exports = {
-	command: 'lb',
+	command: 'lb'.cmd,
 	describe: 'List all Buckets',
 	handler: argv => {
 		storage

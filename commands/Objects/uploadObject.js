@@ -1,13 +1,14 @@
-const storage = require('../googleStorage');
+const storage = require('../../services/googleStorage');
+require('../../core/config/themeColors');
 
 module.exports = {
-    command: 'up-o <Filename> [Bucket]',
+    command: 'up-o'.cmd + ' <Filename>'.req + ' [Bucket]'.opt,
     describe: 'Upload an object from your bucket',
     builder: yargs => yargs
 		.positional('Filename', {})
 		.positional('Bucket', {})
         .default('Bucket', 'my-project-inegi')
-		.example('ct up-o Filename [optional bucket]'),
+		.example('ct'.blue + ' up-o'.cmd + ' <Filename>'.req + ' [Bucket]'.opt),
     handler: argv => {
         storage
             .bucket(argv.Bucket)

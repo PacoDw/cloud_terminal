@@ -1,3 +1,5 @@
+require('./themeColors');
+
 module.exports = ( code = '',  path, message = '' )  => {
     let messages = {   
         PATH_CREATED : `Success: your path has been created in: ${path}`,

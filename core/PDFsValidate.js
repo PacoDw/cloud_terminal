@@ -1,4 +1,4 @@
-const fif = require('../../find-in-files').find;
+const fif = require('../core/find-in-files').find;
 const fs = require('fs');
 const path = require('path');
 const findUp = require('find-up');

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 const yargs = require('yargs');
-const SettingsFile = require('./core/config');
-const cmd = require('./core');
+const SettingsFile = require('./core/SettingsFile');
+const cmd = require('./commands');
+require('./core/config/themeColors');
 
 let checkConfig =  _ => {
 	return { yargs :  SettingsFile.checkConfig(yargs) }
@@ -10,8 +11,8 @@ let checkConfig =  _ => {
 /* All commands */
 yargs
 	.middleware( [checkConfig] )
-	.scriptName("ct")
-	.usage('\nWelcome Google Storage.\n\nUsage: $0 [options]')
+	.scriptName("ct".blue)
+	.usage('\nWelcome Google Storage.\n\nUsage: $0 '+ 'command '.cmd + '<required>'.req +  ' [optional]'.opt)
 	.command( cmd.localFolder )
 	.command( cmd.uploadObject )
 	.command( cmd.createBucket )
@@ -22,7 +23,7 @@ yargs
 	.command( cmd.renameObject )
 	.command( cmd.validateFile )
 	.demandCommand()
-	.example('ct ls-o my-project-inegi')
+	.example('ct'.blue + ' ls-o '.cmd + 'my-project-inegi'.opt)
 	.help()
 	.alias('help', 'h')
 	.locale('en')

@@ -14,7 +14,7 @@ class SettingsFile {
 
     // --------------------------------------------------------------------------------------------------------------------------
     /** @method Returns all messages to displaying in terminal */
-    message(code, msn) { require('./messages')(code, this.config['path'], msn) }
+    message(code, msn) { require('./config/messages')(code, this.config['path'], msn) }
 
     // --------------------------------------------------------------------------------------------------------------------------
     /** @method Receives an object with a path to write inside the config.json file */

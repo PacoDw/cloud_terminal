@@ -1,14 +1,15 @@
-const storage = require('../googleStorage')
+const storage = require('../../services/googleStorage');
+require('../../core/config/themeColors');
 
 module.exports = {
-	command: 'ren-o <Filename> <newName> [Bucket]',
+	command: 'ren-o'.cmd + ' <Filename>'.req + ' <newName>'.req + ' [Bucket]'.opt,
 	describe: 'Rename an object of your bucket',
 	builder: yargs => yargs
 		.positional('Bucket', {})
 		.positional('Filename', {})
 		.positional('newName', {})
 		.default('Bucket', 'my-project-inegi')
-		.example('ct ren-o Filename newName [optional bucket]'),	
+		.example('ct'.blue + ' ren-o'.cmd + ' <Filename>'.req + ' <newName>'.req + ' [Bucket]'.opt),	
 	handler: argv => {
 		storage
 			.bucket(argv.Bucket)

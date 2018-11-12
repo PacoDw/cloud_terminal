@@ -1,5 +1,5 @@
 module.exports = {
-    command: 'lf',
+    command: 'lf'.cmd,
     describe: 'Setting a local folder',
     builder: yargs => yargs
         .option('set', {
@@ -21,7 +21,7 @@ module.exports = {
                 throw 'Required at least a one options';
             return argv;
           })
-        .example('node myStorage -s your_new_path'),
+        .example('ct'.blue + ' -s' + ' your_new_path'.req),
     handler: ( { yargs }  ) => {
         yargs.then( y => {
             if ( y.argv['s'] )
