@@ -1,20 +1,29 @@
 require('./themeColors');
 
-// module.exports = 
-let k =(objc
-	// { txt, cmd, req, req2, 
-	// 	opt, success, error }
-		) => {
-
-			for ( let [key, value] of Object.entries(objc))
+module.exports = (obj) => {
+			let str = '';
+			for ( let [key, value] of Object.entries(obj))
 			{
-				console.log(key, '  ', value);
-
+				switch (key) {
+					case 'ct':
+						str += `${value.ct} `;
+						break;
+					case 'cmd':
+						str += `${value.c} `;
+						break;
+					case 'req':
+						str += `${value.r} `;
+						break;
+					case 'opt':
+						str += `${value.o} `;
+						break;
+					case 's':
+						str += `${value.s} `;
+						break;
+					case 'err':
+						str += `${value.er} `;
+						break;
+				}	
 			}
-		// let text = objc.forEach( item => {
-		// 	item != ''? `${item} ` : ''
-		// });
-
+			return str;
 }
-
-k({cmd:'ls-o', opt:'[Bucket]'});

@@ -3,7 +3,7 @@ const inn = require('../../core/config/interfaceMessages');
 require('../../core/config/themeColors');
 
 module.exports = {
-    command:  inn({cmd:'ls-o', opt:'[Bucket]'}),
+    command:  'ls-o' + ' [Bucket]',
     describe: 'List all objects/files',
     builder: yargs => yargs
         .default('Bucket', 'my-project-inegi'),
@@ -13,7 +13,7 @@ module.exports = {
             .getFiles()
             .then(results => {
                 const files = results[0];
-                console.log('\nFiles:'.bgYellow.bold);
+                console.log('\nFiles:'.s);
                 files.forEach((file, i) => console.log(`${i} ${file.name}`) );
             } )
             .catch(err => console.error('ERROR: '.bgRed, err.errors[0].message.red) );

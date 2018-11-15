@@ -2,6 +2,7 @@
 const yargs = require('yargs');
 const SettingsFile = require('./core/SettingsFile');
 const cmd = require('./commands');
+const inn =require('./core/config/interfaceMessages')
 require('./core/config/themeColors');
 
 let checkConfig =  _ => {
@@ -12,21 +13,22 @@ let checkConfig =  _ => {
 yargs
 	.middleware( [checkConfig] )
 	.scriptName("ct".blue)
-	.usage('\nWelcome Google Storage.\n\nUsage: $0 '+ 'command '.cmd + '<required>'.req +  ' [optional]'.opt)
+	.usage('\nWelcome Google Storage.\n\nUsage: $0 '+ inn({cmd: 'command', req: '<required>', opt: '[optional]'}))
 	.command( cmd.localFolder )
+	.command( cmd.listBuckets )
 	.command( cmd.uploadObject )
 	.command( cmd.createBucket )
 	.command( cmd.listObject )
 	.command( cmd.deleteObject )
 	.command( cmd.downloadObject )
-	.command( cmd.listBuckets )
 	.command( cmd.renameObject )
 	.command( cmd.validateFile )
 	.demandCommand()
-	.example('ct'.blue + ' ls-o '.cmd + 'my-project-inegi'.opt)
+	.example(inn({ct: 'ct', cmd: 'ls-o', opt: 'my-project-inegi',}))
 	.help()
 	.alias('help', 'h')
 	.locale('en')
 	.config( SettingsFile.config )
 	.wrap( yargs.customWrap )
+	yargs
 	.argv;

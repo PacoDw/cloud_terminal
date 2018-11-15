@@ -1,13 +1,14 @@
 const fif = require('../../core/PDFsValidate');
+const inn = require('../../core/config/interfaceMessages');
 require('../../core/config/themeColors');
 
 module.exports = {
-    command: 'val'.cmd + ' <word>'.req + ' [resultsFileName]'.opt,
+    command: 'val' + ' <word>' + ' [resultsFileName]',
     describe: 'Validate PDF file to get results',
     builder: yargs => yargs
 		.positional('word', {})
 		.positional('resultsFileName', {})
-        .example('ct'.blue + 'val'.cmd + ' <word>'.req + ' [resultsFileName]'.opt),
+        .example( inn({cmd:'val',req:'<word>',opt:'[resultsFileName]'})),
     handler: ( yargs ) => {
         fif.findInFiles({
             word : yargs.word, 

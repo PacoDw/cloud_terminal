@@ -1,8 +1,9 @@
 const storage = require('../../services/googleStorage');
+const inn = require('../../core/config/interfaceMessages');
 require('../../core/config/themeColors');
 
 module.exports = {
-	command: 'lb'.cmd,
+	command: 'lb',
 	describe: 'List all Buckets',
 	handler: argv => {
 		storage
@@ -10,8 +11,8 @@ module.exports = {
 			.then(results => {
 				const buckets = results[0];
 				console.log('Buckets:');
-				buckets.forEach( bucket => console.log(bucket.name) );
+				buckets.forEach( bucket => console.log(inn({s:bucket.name})) );
 			})
-			.catch(err => console.error('ERROR:', err.errors[0].message) );
+			.catch(err => console.error(inn({err:"Error:"}), err.errors[0].message) );
 	}
 }

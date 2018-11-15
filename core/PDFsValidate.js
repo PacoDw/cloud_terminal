@@ -2,6 +2,7 @@ const fif = require('../core/find-in-files').find;
 const fs = require('fs');
 const path = require('path');
 const findUp = require('find-up');
+require('./config/themeColors');
 
 class PDFsValidate {
     constructor() {
@@ -11,10 +12,11 @@ class PDFsValidate {
     }   
 
     findInFiles({ word, dir, typeFile, resultsName }) {
+        console.log('\nWorking...'.yellow)
+
         return fif(word, path.join(dir, 'PDFs'), typeFile || '.$')
             .then( res => {
-                console.log('Finish')
-                console.log('\nCreating results file... ')
+                console.log('Creating results file... '.yellow)
                 this.setResults = res;
                 createRes(res, this.config['path'], resultsName);
             })
@@ -25,9 +27,9 @@ class PDFsValidate {
 function createRes(res, dir, resultsName) {
     let fullPath = path.join(dir, `${resultsName}.json`);
     fs.writeFile(fullPath, JSON.stringify( res, 0, 4 ), 'utf-8', err => {
-        if (err)   console.err('ERROR: ', err);
-        console.log('Finish')
-        console.log('The results file has been created at: ', fullPath);
+        if (err)   console.err('ERROR: '.red, err);
+        console.log('Finish\n'.s)
+        console.log('The results file has been created at: ', fullPath.s);
     });
 }
 

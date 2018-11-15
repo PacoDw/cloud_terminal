@@ -1,8 +1,9 @@
 const storage = require('../../services/googleStorage');
 require('../../core/config/themeColors');
+const inn = require('../../core/config/interfaceMessages');
 
 module.exports = {
-    command: 'new '.cmd + '<name>'.req,
+    command: 'new ' + ' <name>',
     aliases: ['n'],
     describe: 'Create a new Bucket',
     handler: argv => {
@@ -11,7 +12,7 @@ module.exports = {
                 location: 'ASIA',
                 storageClass: 'COLDLINE',
             })
-            .then( _ => console.log(`Bucket ${argv.name} created.`) )
-            .catch( err => console.error('ERROR:',err.errors[0].message) );
+            .then( _ => console.log(`Bucket ${inn({s:argv.name})} created.`) )
+            .catch( err => console.error(inn({err:"Error:"}),err.errors[0].message) );
     }
 }
