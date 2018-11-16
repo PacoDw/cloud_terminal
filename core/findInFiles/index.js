@@ -4,7 +4,7 @@ var find = require('find'),
     fs = require('fs'),
     Q = require('q'),
     path = require('path'),
-    extract = require('pdf-text-extract');
+    extract = require('./pdf-text-extract');
 
     function readFile(filename) {
         if(filename.match(/.*\.pdf$/gm))
