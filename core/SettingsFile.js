@@ -52,14 +52,13 @@ class SettingsFile {
             {
                 this.config = config;
                 this.message('FOLDER_NOT_EXISTS');
-                fs.mkdir( this.config['path'], err => {
-                    if( err ) reject(err);
-                    fs.mkdir( this.config['PDFsPath'], error => {
-                        if( error ) console.log('error: ', error);     
-                    });
-                    this.message('FOLDER_CREATED');
-                    return Promise.resolve(config);            
-                }); 
+                return(
+                fs.promises
+                    .mkdir( this.config['path'])
+                    .then(fs.promises.mkdir( this.config['PDFsPath']) )
+                    .then( _ => config )
+                    .catch( _ => this.message('FOLDER_CREATED') )
+                );
             }
             else
             {

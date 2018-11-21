@@ -14,7 +14,7 @@ class PDFsValidate {
     findInFiles({ word, dir, typeFile, resultsName }) {
         console.log('\nWorking...'.yellow)
 
-        return fif(word, path.join(dir, 'PDFs'), typeFile || '.$')
+        return fif(word, dir, typeFile || '.$')
             .then( res => {
                 console.log('Creating results file... '.yellow)
                 this.setResults = res;
