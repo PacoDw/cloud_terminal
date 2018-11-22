@@ -1,4 +1,4 @@
-const fif = require('../core/findInFiles').find;
+const fif = require('../core/findInFiles').findAndCreateFile;
 const fs = require('fs');
 const path = require('path');
 const findUp = require('find-up');
@@ -12,15 +12,8 @@ class PDFsValidate {
     }   
 
     findInFiles({ word, dir, typeFile, resultsName }) {
-        console.log('\nWorking...'.yellow)
-
-        return fif(word, dir, typeFile || '.$')
-            .then( res => {
-                console.log('Creating results file... '.yellow)
-                this.setResults = res;
-                createRes(res, this.config['path'], resultsName);
-            })
-            .catch( err => console.log('Error: ',err));
+        console.log('\nWorking...'.yellow, '\n')
+        fif(word, dir, typeFile || '.$', path.join(this.config['path'], `${resultsName}.json`))
     }
 }
 
