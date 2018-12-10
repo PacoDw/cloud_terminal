@@ -1,6 +1,7 @@
+const inn = require('../../core/config/interfaceMessages');
+
 module.exports = {
-    command: 'localFolder',
-    aliases: ['lf'],
+    command: 'lf',
     describe: 'Setting a local folder',
     builder: yargs => yargs
         .option('set', {
@@ -22,14 +23,14 @@ module.exports = {
                 throw 'Required at least a one options';
             return argv;
           })
-        .example('node myStorage -s your_new_path'),
+        .example(inn({ct:'ct', opt:' -s', req:'your_new_path'})),
     handler: ( { yargs }  ) => {
         yargs.then( y => {
             if ( y.argv['s'] )
                 y.settings.newPath( y.argv['s'] );
             else
-                console.log(`\nYour local folder is now in: ${y.argv['path']}`);
+                console.log(`\nYour local folder is now in: ${inn({s:y.argv['path']})}`);
         })
-        .catch( err => console.log(err) ); 
+        .catch( err => console.log(inn({err:"Error"}), err) ); 
     }
 }

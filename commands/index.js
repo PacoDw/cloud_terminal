@@ -6,5 +6,6 @@ module.exports = {
     renameObject :  require('./Objects/renameObject'),
     createBucket :  require('./Buckets/createBucket'),
     listBuckets :  require('./Buckets/listBuckets'),
-    localFolder :  require('./localFolder'),
+    localFolder :  require('./LocalFolder/localFolder'),
+    validateFile : require('./PDFs_validate/validateFile'),
 }
