@@ -1,11 +1,11 @@
 # Cloud Terminal
 
- El objetivo de este proyecto es principlamente el de subir, descargar y eliminar archivos en una nube privada de Google Cloud Storage através de la comandos para el almacenamiento de archivos resultantes de proyecto de minado de datos, además, es posible examinar archivos con formato de texto plano y PDF, con la intencion de buscar una palabra clave dentro del archivo para buscar coincidencias, y saber cuantas veces fue encontrado dentro de este archivo.
+ El objetivo de este proyecto es principlamente el de subir, descargar y eliminar archivos en una nube privada de Google Cloud Storage através de la comandos para el almacenamiento de archivos resultantes de proyecto de minado de datos, además, es posible examinar archivos con formato de texto plano y PDF, con la intención de buscar una palabra clave dentro del archivo para buscar coincidencias, y saber cuántas veces fue encontrado dentro de este archivo.
 
 ## Prerequisitos
 
 ### Git Bash 
-Necesitas tener instalado git en tu computadora junto con la `terminal de Git Bash` desde https://git-scm.com/downloads con las características predeterminadas. Para verificar que tienes la `terminal Git Bash` instalado buscala en pogramas y ejecuta la terminal, si la terminal no aparece es necesario desinstalar y volver instalar correctamente.
+Necesitas tener instalado git en tu computadora junto con la `terminal de Git Bash` desde https://git-scm.com/downloads con las características predeterminadas. Para verificar que tienes la `terminal Git Bash` instalado buscala en pogramas y ejecuta la terminal, si la terminal no aparece es necesario desinstalar y volver instalar Git correctamente.
 
 ### pdfToText 
 El siguiente paso a verificar dentro de la `terminal Git Bash`, es tener instalado el comando "pdfToText" para ello ejecutar el siguiente comando:
@@ -50,16 +50,15 @@ $ npm --version
 Para empezar con la instalación es necesario haber completado los prerequisitos de manera satisfactoria, el primer paso es clonar el proyecto desde el repositorio principal. Sin embargo, si el proyecto ya lo tiene a través de una memoria USB saltarse al paso 2.
 
 ### Paso 1: Obtener proyecto mediante el repositorio principal
-Tecle el siguiente comando en la terminal de Git Bash en el directorio donde quiera guardarlo, para obtener el proyecto:
+Teclee el siguiente comando en la terminal de Git Bash en el directorio donde quiera guardarlo, para obtener el proyecto:
 
 ```JavaScript
 $ git clone "the_url_of_the_project"
 ```
 
 ### Paso 2: Entrar al proyecto desde la terminal de Git Bash
-Después se debe mover a la carpeta del proyecto con el comando:
 ```JavaScript
-$ ls  -l     // Verificar que el proyecto se a descargado de manera correcta en el directorio actual
+$ ls  -l     // Verificar que el proyecto se ha descargado de manera correcta en el directorio actual
 
 $ cd  /name_of_the_project
 ```
@@ -82,11 +81,11 @@ Para verificar que la instalación haya sido un exito, tecle el siguiente comand
 ```JavaScript
 $ ct
 ```
-> Este comando deberá funcionar en cualquier directorio en el que se encuentre en la terminal bash, además de que mostrara el menu de comandos de la aplicación. En caso de no ser asi, favor de empezar desde el paso uno, asegurandose que el paquete sea el indicado.
+> Este comando deberá funcionar en cualquier directorio en el que se encuentre dentro de la terminal, además de que mostrará el menú de comandos de la aplicación. En caso de no ser así, favor de empezar desde el paso uno, asegurándose que el paquete sea el indicado.
 
 ## Configuración de las Keys
 
-Después de haber completado la instalación del proyecto de manera exitosa, es necesario configurar el archivo que contiene las `keys`, si ya existe una configuración de este archivo, solo copielo y pegelo en el directorio principal y saltese este apartado. Esta configuracion sirve para conectarse con `Google Storage` el archivo se encuentra en el directorio principal:
+Después de haber completado la instalación del proyecto de manera exitosa, es necesario comunicarse con el administrador para solicitar el archivo de `keys` que tendrá el nombre de `google_cloud_storage.json` el cual se debe colocar en base al diagrama de abajo:
 
 ### Directorio principal
 
@@ -101,25 +100,12 @@ Después de haber completado la instalación del proyecto de manera exitosa, es 
     └── README.md
 
 
+El archivo `google_cloud_storage_EXAMPLE.json` tiene que ser cambiado por `google_cloud_storage.json` para que la aplicación pueda leerlo de forma correcta.
 
-El archivo `google_cloud_storage_EXAMPLE.json` tiene que ser renombrado a `google_cloud_storage.json` para que la aplicación pueda leerlo de forma correcta. Después se tienen que establecer las `keys`, para ello se tiene que abrir el archivo el cual contiene lo siguiente:
 
-```JavaScript
-{
-  "type": "service_account",
-  "project_id": "",
-  "private_key_id": "",
-  "private_key": "",
-  "client_email": "",
-  "client_id": "",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": ""
-}
-```
-> Es posible que al momento de configurar Google Storage te genere un archivo igual este, para ese caso solo es necesario copiar y pegar.
+Después ejecuta cualquiera de los comandos que vienen en "ct" para verificar el funcionamiento de cada uno de ellos.
 
+Para ejecutar el comando "ct val" se tiene que introducir los archivos pdf dentro de la carpeta "PDFs" que se encuentra dentro de "Inegi_Downloads" la cual se crea automáticamente al ejecutar cualquier comando dentro de "ct".
 
 ## Autores
 
